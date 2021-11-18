@@ -67,6 +67,8 @@ public class Znamenitost implements Serializable {
         this.drzava = drzava;
     }
 
+    public String getDrzava() { return drzava; }
+
     public String getGlavnaSlika(){
         return glavnaSlika;
     }
@@ -74,4 +76,6 @@ public class Znamenitost implements Serializable {
     public void setGlavnaSlika(String glavnaSlika){
         this.glavnaSlika = glavnaSlika;
     }
+
+
 }
