@@ -1,8 +1,8 @@
 <nav class="navbar navbar-light bg-light">
   <a class="navbar-brand">Znamenitosti Manager</a>
-  <button class="btn btn-sm btn-outline-secondary" type="button">Dodaj znamenitost</button>
+  <button class="btn btn-sm btn-outline-secondary" type="button" data-toggle="modal" data-target="#addModalZnamenitost">Dodaj znamenitost</button>
     <form class="form-inline">
-    <input class="form-control mr-sm-2" type="search" placeholder="Pretraži znamenitosti" aria-label="Search">
+    <input #key="ngModel" ngModel class="form-control mr-sm-2" type="search" (ngModelChange)="searchZnamenitosti(key.value)" name="key" id="searchNaziv" placeholder="Pretraži znamenitosti" aria-label="Search">
   </form>
 </nav>
 <div class="container">
@@ -28,13 +28,136 @@
         </ul>
         <div class="card-body">
           <div class="float-right btn-group btn-group-sm">
-            <a href="#" class="btn btn-primary tooltips" data-placement="top" data-toggle="tooltip"
+            <a (click)="onOpenModal(znamenitost, 'edit')" href="#" class="btn btn-primary" data-placement="top" data-toggle="modal" data-target="#updateModalZnamenitost"
               data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
-            <a href="#" class="btn btn-secondary tooltips" data-placement="top" data-toggle="tooltip"
+            <a (click)="onOpenModal(znamenitost, 'delete')" href="#" class="btn btn-secondary" data-placement="top" data-toggle="modal" data-target="#deleteModalZnamenitost"
               data-original-title="Delete"><i class="fa fa-times"></i></a>
           </div>
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="modal fade" id="updateModalZnamenitost" tabindex="-1" role="dialog" aria-labelledby="znamenitostEditModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateZnamenitostModalLabel">Uredi Znamenitost {{editZnamenitost?.naziv}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form #editForm="ngForm">
+          <div class="form-group">
+            <label for="name">Naziv</label>
+            <input type="text" ngModel="{{editZnamenitost?.naziv}}" name="naziv" class="form-control" id="naziv" placeholder="Naziv" required>
+          </div>
+          <input type="hidden" ngModel="{{editZnamenitost?.id}}" name="id" class="form-control" id="id" required>
+          <div class="form-group">
+            <label for="phone">Longituda</label>
+            <input type="text" ngModel="{{editZnamenitost?.longituda}}" name="longituda" class="form-control" id="longituda"
+              placeholder="Longituda" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Latituda</label>
+            <input type="text" ngModel="{{editZnamenitost?.latituda}}" name="latituda" class="form-control" id="latituda"
+              placeholder="Latituda" required>
+          </div>
+          <div class="form-group">
+            <label for="Drzava">Država</label>
+            <input type="drzava" ngModel="{{editZnamenitost?.drzava}}" name="drzava" class="form-control" id="drzava" placeholder="Drzava" required>
+          </div>
+          <div class="form-group">
+            <label for="Opcina">Općina</label>
+            <input type="text" ngModel="{{editZnamenitost?.opcina}}" name="opcina" class="form-control" id="opcina" placeholder="Općina" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Glavna Slika</label>
+            <input type="text" ngModel="{{editZnamenitost?.glavnaSlika}}" name="glavnaSlika" class="form-control" id="glavnaSlika" placeholder="Glavna Slika" required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-secondary">Zatvori</button>
+            <button (click)="onUpdateZnamenitost(editForm.value)" data-dismiss="modal" class="btn btn-primary">Uredi Znamenitost</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addModalZnamenitost" tabindex="-1" role="dialog" aria-labelledby="addModalZnamenitostLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addZnamenitostModalLabel">Dodaj Znamenitost</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form #addForm="ngForm" (ngSubmit)="onAddZnamenitost(addForm)">
+          <div class="form-group">
+            <label for="naziv">Naziv</label>
+            <input type="text" ngModel name="naziv" class="form-control" id="naziv" placeholder="Naziv" required>
+          </div>
+          <div class="form-group">
+            <label for="naziv">Longituda</label>
+            <input type="text" ngModel name="longituda" class="form-control" id="longituda" placeholder="Longituda" required>
+          </div>
+          <div class="form-group">
+            <label for="latituda">Latituda</label>
+            <input type="text" ngModel name="latituda" class="form-control" id="latituda" placeholder="Latituda" required>
+          </div>
+          <div class="form-group">
+            <label for="opcina">Općina</label>
+            <input type="text" ngModel name="opcina" class="form-control" id="opcina" placeholder="Općina" required>
+          </div>
+          <div class="form-group">
+            <label for="opcina">Država</label>
+            <input type="text" ngModel name="drzava" class="form-control" id="drzava" placeholder="Država" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Glavna Slika</label>
+            <input type="text" ngModel name="glavnaSlika" class="form-control" id="glavnaSlika" placeholder="Glavna Slika"
+              required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="add-znamenitost-form" class="btn btn-secondary" data-dismiss="modal">Zatvori</button>
+            <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary">Dodaj znamenitost</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteModalZnamenitost" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModelLabel">Ukloni Znamenitost</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Jeste li sigurni da želite obrisati {{deleteZnamenitost?.naziv}}?</p>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+          <button (click)="onDeleteZnamenitost(deleteZnamenitost.id!)" class="btn btn-danger" data-dismiss="modal">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="znamenitosti?.length == 0" class="col-lg-12 col-md-12 col-xl-12">
+  <div class="alert alert-info" role="alert">
+    <h4 class="alert-heading">Znamenitosti nisu pronađene</h4>
   </div>
 </div>

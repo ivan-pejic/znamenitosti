@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { Znamenitost } from './znamenitost';
 import { ZnamenitostiService } from './znamenitost.service';
 
@@ -11,6 +12,8 @@ import { ZnamenitostiService } from './znamenitost.service';
 export class AppComponent implements OnInit{
   title = 'znamenitostimanagerapp';
   public znamenitosti: Znamenitost[];
+  public editZnamenitost!: Znamenitost;
+  public deleteZnamenitost!: Znamenitost;
 
   constructor(private znamenitostService: ZnamenitostiService){this.znamenitosti = []}
 
@@ -18,14 +21,75 @@ export class AppComponent implements OnInit{
     this.getZnamenitosti();
   }
     public getZnamenitosti(): void {
-      this.znamenitostService.getZnamenitosti().subscribe(
-      (response: Znamenitost[]) => {
+      this.znamenitostService.getZnamenitosti().subscribe({
+        next: (response: Znamenitost[]) => {
         this.znamenitosti = response;
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         alert(error.message);
-      }
+      }}
       );
     }
-  
+
+    public onOpenModal(znamenitost: Znamenitost, mode: string): void {
+      if (mode==='edit')
+        this.editZnamenitost = znamenitost;
+      else if (mode==='delete')
+        this.deleteZnamenitost = znamenitost;
+    }
+
+    public onUpdateZnamenitost(znamenitost: Znamenitost): void {
+      console.log(znamenitost.id);
+      this.znamenitostService.updateZnamenitost(znamenitost).subscribe({
+        next: (response: Znamenitost) => {
+          document.getElementById('update-znamenitost-form')?.click();
+          this.getZnamenitosti();
+          //updateForm.reset();
+        },
+        error: (error: HttpErrorResponse) => {
+          alert(error.message);
+          //updateForm.reset();
+        }
+    });
+    }
+
+    //CORS BLOKIRA DELETE (?)
+
+    public onDeleteZnamenitost(znamenitostId: number): void {
+      console.log(znamenitostId);
+      this.znamenitostService.deleteZnamenitost(znamenitostId).subscribe({
+        next: (response: void) => {
+          this.getZnamenitosti();
+        },
+        error: (error: HttpErrorResponse) => {
+          alert(error.message);
+        }
+    });
+    }
+    
+    public onAddZnamenitost(addForm: NgForm): void {
+    this.znamenitostService.addZnamenitost(addForm.value).subscribe({
+      next: (response: Znamenitost) => {
+        document.getElementById('add-znamenitost-form')?.click();
+        this.getZnamenitosti();
+        addForm.reset();
+      },
+      error: (error: HttpErrorResponse) => {
+        alert(error.message);
+        addForm.reset();
+      }
+    });
+  }
+
+  public searchZnamenitosti(key: string): void {
+    const results: Znamenitost[] = [];
+    for (const znamenitost of this.znamenitosti) {
+      if (znamenitost.naziv.toLocaleLowerCase().indexOf(key.toLowerCase()) !== -1) {
+        results.push(znamenitost);
+      }
+    }
+    this.znamenitosti = results;
+    if (results.length === 0 || !key)
+      this.getZnamenitosti();
+  }
 }
