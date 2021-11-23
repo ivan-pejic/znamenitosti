@@ -1,8 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Znamenitost } from './znamenitost';
-import { ZnamenitostiService } from './znamenitost.service';
+import { Status } from './enum/status.enum';
+import { Znamenitost } from './interface/znamenitost';
+import { ZnamenitostiService } from './service/znamenitost.service';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,7 @@ export class AppComponent implements OnInit{
   public znamenitosti: Znamenitost[];
   public editZnamenitost!: Znamenitost;
   public deleteZnamenitost!: Znamenitost;
+  readonly Status = Status;
 
   constructor(private znamenitostService: ZnamenitostiService){this.znamenitosti = []}
 
@@ -89,7 +91,23 @@ export class AppComponent implements OnInit{
       }
     }
     this.znamenitosti = results;
-    if (results.length === 0 || !key)
+    if (!key){
       this.getZnamenitosti();
+    }
+  }
+
+  public filterZnamenitosti (status: Status): void {
+    if (status === Status.ALL) {
+      this.getZnamenitosti();
+    }
+    else if (status === Status.ZNAMENITOST_UP || status === Status.ZNAMENITOST_DOWN) {
+    const results: Znamenitost[] = [];
+    for (const znamenitost of this.znamenitosti) {
+      if (znamenitost.status === status) {
+        results.push(znamenitost);
+      }
+    }
+    this.znamenitosti = results;
+    }
   }
 }

@@ -1,5 +1,7 @@
 package pejic.ivan.znamenitostimanager.model;
 
+import pejic.ivan.znamenitostimanager.enumeration.Status;
+
 import java.io.Serializable;
 import javax.persistence.*;
 
@@ -15,16 +17,18 @@ public class Znamenitost implements Serializable {
     private String opcina;
     private String drzava;
     private String glavnaSlika;
+    private Status status;
 
     public Znamenitost(){}
 
-    public Znamenitost(String naziv, String longituda, String latituda, String opcina, String drzava, String glavnaSlika){
+    public Znamenitost(String naziv, String longituda, String latituda, String opcina, String drzava, String glavnaSlika, Status status){
         this.naziv = naziv;
         this.longituda = longituda;
         this.latituda = latituda;
         this.opcina = opcina;
         this.drzava = drzava;
         this.glavnaSlika = glavnaSlika;
+        this.status = status;
     }
 
     public Long getId(){
@@ -63,6 +67,8 @@ public class Znamenitost implements Serializable {
         return opcina;
     }
 
+    public void setOpcina(String opcina) { this.opcina = opcina; }
+
     public void setDrzava(String drzava){
         this.drzava = drzava;
     }
@@ -77,5 +83,7 @@ public class Znamenitost implements Serializable {
         this.glavnaSlika = glavnaSlika;
     }
 
+    public void setStatus (Status status) { this.status = status; }
 
+    public Status getStatus() { return status; }
 }

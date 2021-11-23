@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Znamenitost } from './znamenitost';
+import { Znamenitost } from '../interface/znamenitost';
+import { Status } from '../enum/status.enum';
 
 @Injectable({providedIn: 'root'})
 export class ZnamenitostiService {
@@ -25,4 +26,7 @@ export class ZnamenitostiService {
     public deleteZnamenitost(znamenitostId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiServerUrl}/znamenitost/delete/${znamenitostId}`);
   }
+
+  // filterZnamenitosti(status: Status, response: Znamenitost): Observable<Znamenitost> {
+    //return 
 }

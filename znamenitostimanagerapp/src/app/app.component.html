@@ -2,6 +2,11 @@
   <a class="navbar-brand">Znamenitosti Manager</a>
   <button class="btn btn-sm btn-outline-secondary" type="button" data-toggle="modal" data-target="#addModalZnamenitost">Dodaj znamenitost</button>
     <form class="form-inline">
+    <select name="status" class="btn btn-info" style="Height:32.91px">
+      <option (click)="filterZnamenitosti(Status.ALL)" value="ALL">Svi</option>
+      <option (click)="filterZnamenitosti(Status.ZNAMENITOST_UP)" value="ZNAMENITOST_UP">ZNAMENITOST AKTIVNA</option>
+      <option (click)="filterZnamenitosti(Status.ZNAMENITOST_DOWN)" value="ZNAMENITOST_DOWN">ZNAMENITOST NEAKTIVNA</option>
+    </select>
     <input #key="ngModel" ngModel class="form-control mr-sm-2" type="search" (ngModelChange)="searchZnamenitosti(key.value)" name="key" id="searchNaziv" placeholder="Pretraži znamenitosti" aria-label="Search">
   </form>
 </nav>
@@ -21,10 +26,11 @@
           </div>
         </div>
         <ul class="list-group list-group-flush">
-          <li class="list-group-item"><i class="fa fa-globe float-right"></i>Longituda : <a
-              href="#">{{znamenitost?.longituda}}</a></li>
-          <li class="list-group-item"><i class="fa fa-globe float-right"></i>Latituda : <a
-              href="#">{{znamenitost?.latituda}}</a></li>
+          <li class="list-group-item"><i class="fa fa-globe float-right"></i>Longituda : {{znamenitost?.longituda}}</li>
+          <li class="list-group-item"><i class="fa fa-globe float-right"></i>Latituda : {{znamenitost?.latituda}}</li>
+          <li class="list-group-item"><i class="fa">Status :<span class="badge" [ngClass]="[znamenitost.status === Status.ZNAMENITOST_UP ? ' badge-success' : ' badge-danger']">
+            {{znamenitost?.status=== Status.ZNAMENITOST_UP ? 'ZNAMENITOST AKTIVNA' : ' ZNAMENITOST NEAKTIVNA'}}</span></i>
+          </li>
         </ul>
         <div class="card-body">
           <div class="float-right btn-group btn-group-sm">
@@ -75,8 +81,13 @@
             <input type="text" ngModel="{{editZnamenitost?.opcina}}" name="opcina" class="form-control" id="opcina" placeholder="Općina" required>
           </div>
           <div class="form-group">
-            <label for="phone">Glavna Slika</label>
+            <label for="glavnaSlika">Glavna Slika</label>
             <input type="text" ngModel="{{editZnamenitost?.glavnaSlika}}" name="glavnaSlika" class="form-control" id="glavnaSlika" placeholder="Glavna Slika" required>
+          </div>
+          <div class="form-group">
+            <label for="status">Status</label>
+            <input type="text" ngModel="{{editZnamenitost?.status}}" name="status" class="form-control" id="status"
+              placeholder="Status" required>
           </div>
           <div class="modal-footer">
             <button type="button" data-dismiss="modal" class="btn btn-secondary">Zatvori</button>
@@ -121,8 +132,13 @@
             <input type="text" ngModel name="drzava" class="form-control" id="drzava" placeholder="Država" required>
           </div>
           <div class="form-group">
-            <label for="phone">Glavna Slika</label>
+            <label for="glavnaSlika">Glavna Slika</label>
             <input type="text" ngModel name="glavnaSlika" class="form-control" id="glavnaSlika" placeholder="Glavna Slika"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="status">Status</label>
+            <input type="text" ngModel name="status" class="form-control" id="status" placeholder="Status"
               required>
           </div>
           <div class="modal-footer">
