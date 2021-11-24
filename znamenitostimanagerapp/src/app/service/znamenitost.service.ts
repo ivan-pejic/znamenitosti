@@ -26,7 +26,4 @@ export class ZnamenitostiService {
     public deleteZnamenitost(znamenitostId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiServerUrl}/znamenitost/delete/${znamenitostId}`);
   }
-
-  // filterZnamenitosti(status: Status, response: Znamenitost): Observable<Znamenitost> {
-    //return 
 }

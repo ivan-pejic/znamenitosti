@@ -2,12 +2,12 @@
   <a class="navbar-brand">Znamenitosti Manager</a>
   <button class="btn btn-sm btn-outline-secondary" type="button" data-toggle="modal" data-target="#addModalZnamenitost">Dodaj znamenitost</button>
     <form class="form-inline">
-    <select name="status" class="btn btn-info" style="Height:32.91px">
-      <option (click)="filterZnamenitosti(Status.ALL)" value="ALL">Svi</option>
-      <option (click)="filterZnamenitosti(Status.ZNAMENITOST_UP)" value="ZNAMENITOST_UP">ZNAMENITOST AKTIVNA</option>
-      <option (click)="filterZnamenitosti(Status.ZNAMENITOST_DOWN)" value="ZNAMENITOST_DOWN">ZNAMENITOST NEAKTIVNA</option>
+    <select #filter="ngModel" (ngModelChange)="filterZnamenitosti($event, key.value)" ngModel="ALL" name="status" class="btn btn-info" style="Height:32.91px">
+      <option value="ALL">Svi</option>
+      <option value="ZNAMENITOST_UP">ZNAMENITOST AKTIVNA</option>
+      <option value="ZNAMENITOST_DOWN">ZNAMENITOST NEAKTIVNA</option>
     </select>
-    <input #key="ngModel" ngModel class="form-control mr-sm-2" type="search" (ngModelChange)="searchZnamenitosti(key.value)" name="key" id="searchNaziv" placeholder="Pretraži znamenitosti" aria-label="Search">
+    <input #key="ngModel" ngModel class="form-control mr-sm-2" type="search" (ngModelChange)="filterZnamenitosti(filter.value, key.value)" name="key" id="searchNaziv" placeholder="Pretraži znamenitosti" aria-label="Search">
   </form>
 </nav>
 <div class="container">

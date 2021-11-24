@@ -12,12 +12,14 @@ import { ZnamenitostiService } from './service/znamenitost.service';
 })
 export class AppComponent implements OnInit{
   title = 'znamenitostimanagerapp';
+  public znamenitostiAll: Znamenitost[];
+  public znamenitostiFiltered: Znamenitost[];
   public znamenitosti: Znamenitost[];
   public editZnamenitost!: Znamenitost;
   public deleteZnamenitost!: Znamenitost;
   readonly Status = Status;
 
-  constructor(private znamenitostService: ZnamenitostiService){this.znamenitosti = []}
+  constructor(private znamenitostService: ZnamenitostiService){this.znamenitosti = [], this.znamenitostiAll = [], this.znamenitostiFiltered = []}
 
   ngOnInit(){
     this.getZnamenitosti();
@@ -26,6 +28,7 @@ export class AppComponent implements OnInit{
       this.znamenitostService.getZnamenitosti().subscribe({
         next: (response: Znamenitost[]) => {
         this.znamenitosti = response;
+        this.znamenitostiAll = response;
       },
       error: (error: HttpErrorResponse) => {
         alert(error.message);
@@ -41,7 +44,6 @@ export class AppComponent implements OnInit{
     }
 
     public onUpdateZnamenitost(znamenitost: Znamenitost): void {
-      console.log(znamenitost.id);
       this.znamenitostService.updateZnamenitost(znamenitost).subscribe({
         next: (response: Znamenitost) => {
           document.getElementById('update-znamenitost-form')?.click();
@@ -58,7 +60,6 @@ export class AppComponent implements OnInit{
     //CORS BLOKIRA DELETE (?)
 
     public onDeleteZnamenitost(znamenitostId: number): void {
-      console.log(znamenitostId);
       this.znamenitostService.deleteZnamenitost(znamenitostId).subscribe({
         next: (response: void) => {
           this.getZnamenitosti();
@@ -83,31 +84,37 @@ export class AppComponent implements OnInit{
     });
   }
 
-  public searchZnamenitosti(key: string): void {
-    const results: Znamenitost[] = [];
-    for (const znamenitost of this.znamenitosti) {
-      if (znamenitost.naziv.toLocaleLowerCase().indexOf(key.toLowerCase()) !== -1) {
-        results.push(znamenitost);
-      }
-    }
-    this.znamenitosti = results;
-    if (!key){
-      this.getZnamenitosti();
-    }
-  }
+  // public searchZnamenitosti(key: string): void {
+    
+  //   if (!key){
+  //     this.getZnamenitosti();
+  //   }
+  // }
 
-  public filterZnamenitosti (status: Status): void {
+  public filterZnamenitosti (status?: Status, key?: string): void {    
+    var results: Znamenitost[] = [];
+    this.znamenitosti=this.znamenitostiAll;
     if (status === Status.ALL) {
-      this.getZnamenitosti();
+      this.znamenitosti=this.znamenitostiAll;
     }
     else if (status === Status.ZNAMENITOST_UP || status === Status.ZNAMENITOST_DOWN) {
-    const results: Znamenitost[] = [];
     for (const znamenitost of this.znamenitosti) {
       if (znamenitost.status === status) {
         results.push(znamenitost);
       }
     }
     this.znamenitosti = results;
+    this.znamenitostiFiltered = results;
+    }
+
+    if (key){
+    results = [];
+      for (const znamenitost of this.znamenitostiFiltered) {
+          if (znamenitost.naziv.toLocaleLowerCase().indexOf(key.toLowerCase()) !== -1) {
+            results.push(znamenitost);
+          }
+          this.znamenitosti=results;
+      }
     }
   }
 }
