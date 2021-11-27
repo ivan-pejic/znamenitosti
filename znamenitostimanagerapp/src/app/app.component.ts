@@ -4,6 +4,8 @@ import { NgForm } from '@angular/forms';
 import { Status } from './enum/status.enum';
 import { Znamenitost } from './interface/znamenitost';
 import { ZnamenitostiService } from './service/znamenitost.service';
+import { AuthenticationService } from './service/authentication.service';
+import { LogInData } from './model/logInData';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +21,7 @@ export class AppComponent implements OnInit{
   public deleteZnamenitost!: Znamenitost;
   readonly Status = Status;
 
-  constructor(private znamenitostService: ZnamenitostiService){this.znamenitosti = [], this.znamenitostiAll = [], this.znamenitostiFiltered = []}
+  constructor(public authenticationService: AuthenticationService, private znamenitostService: ZnamenitostiService){this.znamenitosti = [], this.znamenitostiAll = [], this.znamenitostiFiltered = []}
 
   ngOnInit(){
     this.getZnamenitosti();
@@ -48,11 +50,9 @@ export class AppComponent implements OnInit{
         next: (response: Znamenitost) => {
           document.getElementById('update-znamenitost-form')?.click();
           this.getZnamenitosti();
-          //updateForm.reset();
         },
         error: (error: HttpErrorResponse) => {
           alert(error.message);
-          //updateForm.reset();
         }
     });
     }
@@ -116,5 +116,11 @@ export class AppComponent implements OnInit{
           this.znamenitosti=results;
       }
     }
+  }
+
+  public onSubmit(loginForm: NgForm): void {
+    const logInData = new LogInData(loginForm.value.user, loginForm.value.password);
+    this.authenticationService.authenticate(loginForm.value);
+    console.log(this.authenticationService.isAuthenticated);
   }
 }

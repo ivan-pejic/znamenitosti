@@ -7,8 +7,37 @@
       <option value="ZNAMENITOST_UP">ZNAMENITOST AKTIVNA</option>
       <option value="ZNAMENITOST_DOWN">ZNAMENITOST NEAKTIVNA</option>
     </select>
-    <input #key="ngModel" ngModel class="form-control mr-sm-2" type="search" (ngModelChange)="filterZnamenitosti(filter.value, key.value)" name="key" id="searchNaziv" placeholder="Pretraži znamenitosti" aria-label="Search">
+    <input #key="ngModel" ngModel class="form-control mr-sm-2 ml-sm-2" type="search" (ngModelChange)="filterZnamenitosti(filter.value, key.value)" name="key" id="searchNaziv" placeholder="Pretraži znamenitosti" aria-label="Search">
   </form>
+
+  <li class="dropdown" *ngIf="!authenticationService.isAuthenticated">
+    <button type="button" id="dropdownMenu1" data-toggle="dropdown"
+      class="btn btn-outline-secondary dropdown-toggle">Prijava</button>
+    <ul class="dropdown-menu dropdown-menu-right mt-2">
+      <li class="px-3 py-2">
+        <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" >
+          <div class="form-group">
+            <label for="user">Korisnik </label>
+            <input type="text" ngModel="user" name="user" class="form-control" id="user" placeholder="Korisnik" required >
+          </div>
+          <div class="form-group">
+            <label for="password">Šifra</label>
+            <input type="password" ngModel="test" name="password" class="form-control" id="password" placeholder="Šifra" required>
+          </div>
+          <div class="modal-footer">
+            <button [disabled]="loginForm.invalid" type="submit" class="btn btn-primary">Prijava</button>
+          </div>
+        </form>
+      </li>
+    </ul>
+  </li>
+
+  <li *ngIf="authenticationService.isAuthenticated">
+    <form (ngSubmit)="authenticationService.logout()">
+      <div class="form-group"><button type="submit" class="btn btn-outline-secondary">Odjava</button>
+      </div>
+    </form>
+  </li>
 </nav>
 <div class="container">
   <div class="row">
@@ -32,12 +61,14 @@
             {{znamenitost?.status=== Status.ZNAMENITOST_UP ? 'ZNAMENITOST AKTIVNA' : ' ZNAMENITOST NEAKTIVNA'}}</span></i>
           </li>
         </ul>
-        <div class="card-body">
+        <div class="card-body" *ngIf="authenticationService.isAuthenticated">
           <div class="float-right btn-group btn-group-sm">
             <a (click)="onOpenModal(znamenitost, 'edit')" href="#" class="btn btn-primary" data-placement="top" data-toggle="modal" data-target="#updateModalZnamenitost"
               data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
             <a (click)="onOpenModal(znamenitost, 'delete')" href="#" class="btn btn-secondary" data-placement="top" data-toggle="modal" data-target="#deleteModalZnamenitost"
               data-original-title="Delete"><i class="fa fa-times"></i></a>
+
+              <div *ngIf="authenticationService.isAuthenticated"><p>RATING</p></div>
           </div>
         </div>
       </div>
