@@ -14,9 +14,9 @@ import { Role } from './enum/role.enum';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit{
-  selected = 0;
+  selected: number[];
   hovered = 0;
-  readonly = false;
+  readonly = true;
   title = 'znamenitostimanagerapp';
   public user: User[];
   public znamenitostiAll: Znamenitost[];
@@ -25,10 +25,11 @@ export class AppComponent implements OnInit{
   public editZnamenitost!: Znamenitost;
   public deleteZnamenitost!: Znamenitost;
   readonly Status = Status;
-  readonly Role = Role;
+  isAuthenticated = false;
+  isAdmin = false;
 
 
-  constructor(public authenticationService: AuthenticationService, private znamenitostService: ZnamenitostiService){this.user = [], this.znamenitosti = [], this.znamenitostiAll = [], this.znamenitostiFiltered = []}
+  constructor(public authenticationService: AuthenticationService, private znamenitostService: ZnamenitostiService){this.selected= [], this.user = [], this.znamenitosti = [], this.znamenitostiAll = [], this.znamenitostiFiltered = []}
 
   ngOnInit(){
     this.getZnamenitosti();
@@ -103,16 +104,10 @@ export class AppComponent implements OnInit{
     });
   }
 
-  // public searchZnamenitosti(key: string): void {
-    
-  //   if (!key){
-  //     this.getZnamenitosti();
-  //   }
-  // }
-
-  public filterZnamenitosti (status?: Status, key?: string): void {    
+  public filterZnamenitosti (status?: Status, key?: string): void {
     var results: Znamenitost[] = [];
     this.znamenitosti=this.znamenitostiAll;
+    this.znamenitostiFiltered=this.znamenitostiAll;
     if (status === Status.ALL) {
       this.znamenitosti=this.znamenitostiAll;
     }
@@ -138,6 +133,31 @@ export class AppComponent implements OnInit{
   }
 
   public onSubmit(loginForm: NgForm): void {
-    this.authenticationService.authenticate(loginForm.value);
+    this.authenticate(loginForm.value);
+  }  
+
+  authenticate(logInData: User): void {
+    this.authenticationService.findUser(logInData.user, logInData.sifra).subscribe({
+      next: (response: User) => {
+        this.isAuthenticated  = true;
+        this.readonly = false;
+        if (response.uloga===Role.USER_ADMIN)
+          this.isAdmin = true;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.isAuthenticated = false;
+        this.isAdmin = false;
+      }
+    });
+  }
+
+  logout() {
+    this.isAuthenticated = false;
+    this.isAdmin = false;
+    this.readonly = true;
+  }
+
+  public onRateChange(id: number): void{
+    console.log(this.user);
   }
 }

@@ -10,8 +10,10 @@ import { Role } from '../enum/role.enum';
   providedIn: 'root'
 })
 export class AuthenticationService {
+
   private apiServerUrl = environment.apiBaseUrl;
 
+  constructor(private http: HttpClient){}
 
   public getUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiServerUrl}/user/`);
@@ -25,26 +27,5 @@ export class AuthenticationService {
     return this.http.get<User>(`${this.apiServerUrl}/user/find/${korisnicko}and${sifra}`);
   }
 
-  isAuthenticated = false;
-  isAdmin = false;
 
-  constructor(private http: HttpClient){}
-
-  authenticate(logInData: User): void {
-    this.findUser(logInData.user, logInData.sifra).subscribe({
-      next: (response: User) => {
-        this.isAuthenticated  = true;
-        if (response.uloga===Role.USER_ADMIN)
-          this.isAdmin = true;
-      },
-      error: (error: HttpErrorResponse) => {
-        this.isAuthenticated = false;
-        this.isAdmin = false;
-      }
-    });
-  }
-
-  logout() {
-    this.isAuthenticated = false;
-  }
 }

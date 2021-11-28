@@ -1,6 +1,6 @@
 <nav class="navbar navbar-light bg-light">
   <a class="navbar-brand">Znamenitosti Manager</a>
-  <button class="btn btn-sm btn-outline-secondary" type="button" data-toggle="modal" data-target="#addModalZnamenitost">Dodaj znamenitost</button>
+  <button *ngIf="isAdmin"class="btn btn-sm btn-outline-secondary" type="button" data-toggle="modal" data-target="#addModalZnamenitost">Dodaj znamenitost</button>
     <form class="form-inline">
     <select #filter="ngModel" (ngModelChange)="filterZnamenitosti($event, key.value)" ngModel="ALL" name="status" class="btn btn-info" style="Height:32.91px">
       <option value="ALL">Svi</option>
@@ -10,7 +10,7 @@
     <input #key="ngModel" ngModel class="form-control mr-sm-2 ml-sm-2" type="search" (ngModelChange)="filterZnamenitosti(filter.value, key.value)" name="key" id="searchNaziv" placeholder="Pretraži znamenitosti" aria-label="Search">
   </form>
 
-  <li class="dropdown" *ngIf="!authenticationService.isAuthenticated">
+  <li class="dropdown" *ngIf="!isAuthenticated">
     <button type="button" id="dropdownMenu1" data-toggle="dropdown"
       class="btn btn-outline-secondary dropdown-toggle">Prijava</button>
     <ul class="dropdown-menu dropdown-menu-right mt-2">
@@ -32,8 +32,8 @@
     </ul>
   </li>
 
-  <li *ngIf="authenticationService.isAuthenticated">
-    <form (ngSubmit)="authenticationService.logout()">
+  <li *ngIf="isAuthenticated">
+    <form (ngSubmit)="logout()">
       <div class="form-group"><button type="submit" class="btn btn-outline-secondary">Odjava</button>
       </div>
     </form>
@@ -41,7 +41,7 @@
 </nav>
 <div class="container">
   <div class="row">
-    <div *ngFor="let znamenitost of znamenitosti; let i = index" class="col-md-6 col-xl-3">
+    <div *ngFor="let znamenitost of znamenitosti" class="col-md-6 col-xl-3">
       <div class="card m-b-30">
         <div class="card-body row">
           <div class="col-6">
@@ -61,7 +61,7 @@
             {{znamenitost?.status=== Status.ZNAMENITOST_UP ? 'ZNAMENITOST AKTIVNA' : ' ZNAMENITOST NEAKTIVNA'}}</span></i>
           </li>
         </ul>
-        <div class="card-body" *ngIf="authenticationService.isAuthenticated && authenticationService.isAdmin">
+        <div class="card-body" *ngIf="isAdmin">
           <div class="float-right btn-group btn-group-sm">
             <a (click)="onOpenModal(znamenitost, 'edit')" href="#" class="btn btn-primary" data-placement="top" data-toggle="modal" data-target="#updateModalZnamenitost"
               data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
@@ -69,11 +69,11 @@
               data-original-title="Delete"><i class="fa fa-times"></i></a>
           </div>
         </div>
-          <div class="card-body" *ngIf="authenticationService.isAuthenticated && !authenticationService.isAdmin">
-              <div *ngIf="authenticationService.isAuthenticated && znamenitost?.status === Status.ZNAMENITOST_UP">
+          <div class="card-body" *ngIf="!isAdmin">
+              <div *ngIf="znamenitost?.status === Status.ZNAMENITOST_UP">
 
 
-                <ngb-rating id="{{i}}" [max]="5" [(rate)]="selected" (hover)="hovered=$event" (leave)="hovered=0"></ngb-rating>
+                <ngb-rating id="{{znamenitost.id}}" (rateChange)="onRateChange(znamenitost.id)" [max]="5" [(rate)]="selected[znamenitost.id]" (hover)="hovered=$event" (leave)="hovered=0" [readonly]="readonly"></ngb-rating>
 
 
               </div>  
