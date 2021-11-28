@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Znamenitost } from '../interface/znamenitost';
-import { Status } from '../enum/status.enum';
 
 @Injectable({providedIn: 'root'})
 export class ZnamenitostiService {

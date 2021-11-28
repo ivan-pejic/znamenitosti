@@ -5,7 +5,8 @@ import { Status } from './enum/status.enum';
 import { Znamenitost } from './interface/znamenitost';
 import { ZnamenitostiService } from './service/znamenitost.service';
 import { AuthenticationService } from './service/authentication.service';
-import { LogInData } from './model/logInData';
+import { User } from './interface/user';
+import { Role } from './enum/role.enum';
 
 @Component({
   selector: 'app-root',
@@ -13,24 +14,42 @@ import { LogInData } from './model/logInData';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit{
+  selected = 0;
+  hovered = 0;
+  readonly = false;
   title = 'znamenitostimanagerapp';
+  public user: User[];
   public znamenitostiAll: Znamenitost[];
   public znamenitostiFiltered: Znamenitost[];
   public znamenitosti: Znamenitost[];
   public editZnamenitost!: Znamenitost;
   public deleteZnamenitost!: Znamenitost;
   readonly Status = Status;
+  readonly Role = Role;
 
-  constructor(public authenticationService: AuthenticationService, private znamenitostService: ZnamenitostiService){this.znamenitosti = [], this.znamenitostiAll = [], this.znamenitostiFiltered = []}
+
+  constructor(public authenticationService: AuthenticationService, private znamenitostService: ZnamenitostiService){this.user = [], this.znamenitosti = [], this.znamenitostiAll = [], this.znamenitostiFiltered = []}
 
   ngOnInit(){
     this.getZnamenitosti();
+    this.getUsers();
   }
     public getZnamenitosti(): void {
       this.znamenitostService.getZnamenitosti().subscribe({
         next: (response: Znamenitost[]) => {
         this.znamenitosti = response;
         this.znamenitostiAll = response;
+      },
+      error: (error: HttpErrorResponse) => {
+        alert(error.message);
+      }}
+      );
+    }
+
+    public getUsers(): void {
+      this.authenticationService.getUsers().subscribe({
+        next: (response: User[]) => {
+        this.user = response;
       },
       error: (error: HttpErrorResponse) => {
         alert(error.message);
@@ -119,8 +138,6 @@ export class AppComponent implements OnInit{
   }
 
   public onSubmit(loginForm: NgForm): void {
-    const logInData = new LogInData(loginForm.value.user, loginForm.value.password);
     this.authenticationService.authenticate(loginForm.value);
-    console.log(this.authenticationService.isAuthenticated);
   }
 }

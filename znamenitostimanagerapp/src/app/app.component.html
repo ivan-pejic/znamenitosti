@@ -21,8 +21,8 @@
             <input type="text" ngModel="user" name="user" class="form-control" id="user" placeholder="Korisnik" required >
           </div>
           <div class="form-group">
-            <label for="password">Šifra</label>
-            <input type="password" ngModel="test" name="password" class="form-control" id="password" placeholder="Šifra" required>
+            <label for="sifra">Šifra</label>
+            <input type="sifra" ngModel="test" name="sifra" class="form-control" id="password" placeholder="Šifra" required>
           </div>
           <div class="modal-footer">
             <button [disabled]="loginForm.invalid" type="submit" class="btn btn-primary">Prijava</button>
@@ -41,7 +41,7 @@
 </nav>
 <div class="container">
   <div class="row">
-    <div *ngFor="let znamenitost of znamenitosti" class="col-md-6 col-xl-3">
+    <div *ngFor="let znamenitost of znamenitosti; let i = index" class="col-md-6 col-xl-3">
       <div class="card m-b-30">
         <div class="card-body row">
           <div class="col-6">
@@ -61,16 +61,23 @@
             {{znamenitost?.status=== Status.ZNAMENITOST_UP ? 'ZNAMENITOST AKTIVNA' : ' ZNAMENITOST NEAKTIVNA'}}</span></i>
           </li>
         </ul>
-        <div class="card-body" *ngIf="authenticationService.isAuthenticated">
+        <div class="card-body" *ngIf="authenticationService.isAuthenticated && authenticationService.isAdmin">
           <div class="float-right btn-group btn-group-sm">
             <a (click)="onOpenModal(znamenitost, 'edit')" href="#" class="btn btn-primary" data-placement="top" data-toggle="modal" data-target="#updateModalZnamenitost"
               data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
             <a (click)="onOpenModal(znamenitost, 'delete')" href="#" class="btn btn-secondary" data-placement="top" data-toggle="modal" data-target="#deleteModalZnamenitost"
               data-original-title="Delete"><i class="fa fa-times"></i></a>
-
-              <div *ngIf="authenticationService.isAuthenticated"><p>RATING</p></div>
           </div>
         </div>
+          <div class="card-body" *ngIf="authenticationService.isAuthenticated && !authenticationService.isAdmin">
+              <div *ngIf="authenticationService.isAuthenticated && znamenitost?.status === Status.ZNAMENITOST_UP">
+
+
+                <ngb-rating id="{{i}}" [max]="5" [(rate)]="selected" (hover)="hovered=$event" (leave)="hovered=0"></ngb-rating>
+
+
+              </div>  
+          </div>
       </div>
     </div>
   </div>
