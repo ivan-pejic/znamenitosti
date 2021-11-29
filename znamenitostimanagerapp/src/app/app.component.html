@@ -1,6 +1,6 @@
 <nav class="navbar navbar-light bg-light">
   <a class="navbar-brand">Znamenitosti Manager</a>
-  <button *ngIf="isAdmin"class="btn btn-sm btn-outline-secondary" type="button" data-toggle="modal" data-target="#addModalZnamenitost">Dodaj znamenitost</button>
+  <button *ngIf="user?.uloga===Role.USER_ADMIN"class="btn btn-sm btn-outline-secondary" type="button" data-toggle="modal" data-target="#addModalZnamenitost">Dodaj znamenitost</button>
     <form class="form-inline">
     <select #filter="ngModel" (ngModelChange)="filterZnamenitosti($event, key.value)" ngModel="ALL" name="status" class="btn btn-info" style="Height:32.91px">
       <option value="ALL">Svi</option>
@@ -61,7 +61,7 @@
             {{znamenitost?.status=== Status.ZNAMENITOST_UP ? 'ZNAMENITOST AKTIVNA' : ' ZNAMENITOST NEAKTIVNA'}}</span></i>
           </li>
         </ul>
-        <div class="card-body" *ngIf="isAdmin">
+        <div class="card-body" *ngIf="user?.uloga === Role.USER_ADMIN">
           <div class="float-right btn-group btn-group-sm">
             <a (click)="onOpenModal(znamenitost, 'edit')" href="#" class="btn btn-primary" data-placement="top" data-toggle="modal" data-target="#updateModalZnamenitost"
               data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
@@ -69,7 +69,7 @@
               data-original-title="Delete"><i class="fa fa-times"></i></a>
           </div>
         </div>
-          <div class="card-body" *ngIf="!isAdmin">
+          <div class="card-body" *ngIf="user?.uloga === Role.USER_GUEST || !isAuthenticated">
               <div *ngIf="znamenitost?.status === Status.ZNAMENITOST_UP">
 
 

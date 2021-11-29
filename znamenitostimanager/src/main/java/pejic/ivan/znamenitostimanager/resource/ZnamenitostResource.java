@@ -1,4 +1,4 @@
-package pejic.ivan.znamenitostimanager;
+package pejic.ivan.znamenitostimanager.resource;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
