@@ -5,10 +5,8 @@ import { Status } from './enum/status.enum';
 import { Znamenitost } from './interface/znamenitost';
 import { ZnamenitostiService } from './service/znamenitost.service';
 import { AuthenticationService } from './service/authentication.service';
-import { OcjenaService } from './service/ocjena.service';
 import { User } from './interface/user';
 import { Role } from './enum/role.enum';
-import { Ocjena } from './interface/ocjena';
 
 @Component({
   selector: 'app-root',
@@ -20,28 +18,26 @@ export class AppComponent implements OnInit{
   hovered = 0;
   readonly = true;
   title = 'znamenitostimanagerapp';
-  public user!: User;
+  public user: User[];
   public znamenitostiAll: Znamenitost[];
   public znamenitostiFiltered: Znamenitost[];
   public znamenitosti: Znamenitost[];
   public editZnamenitost!: Znamenitost;
   public deleteZnamenitost!: Znamenitost;
-  public ocjene: Ocjena[]
   readonly Status = Status;
-  readonly Role = Role;
   isAuthenticated = false;
+  isAdmin = false;
 
 
-  constructor(public ocjenaService: OcjenaService, public authenticationService: AuthenticationService, private znamenitostService: ZnamenitostiService){this.ocjene = [], this.selected= [], this.znamenitosti = [], this.znamenitostiAll = [], this.znamenitostiFiltered = []}
+  constructor(public authenticationService: AuthenticationService, private znamenitostService: ZnamenitostiService){this.selected= [], this.user = [], this.znamenitosti = [], this.znamenitostiAll = [], this.znamenitostiFiltered = []}
 
   ngOnInit(){
     this.getZnamenitosti();
+    this.getUsers();
   }
-
     public getZnamenitosti(): void {
       this.znamenitostService.getZnamenitosti().subscribe({
         next: (response: Znamenitost[]) => {
-        this.getOcjene();
         this.znamenitosti = response;
         this.znamenitostiAll = response;
       },
@@ -51,11 +47,10 @@ export class AppComponent implements OnInit{
       );
     }
 
-    public getOcjene(): void {
-      this.ocjenaService.getOcjene().subscribe({
-        next: (response: Ocjena[]) => {
-          this.setRating();
-          this.ocjene = response;
+    public getUsers(): void {
+      this.authenticationService.getUsers().subscribe({
+        next: (response: User[]) => {
+        this.user = response;
       },
       error: (error: HttpErrorResponse) => {
         alert(error.message);
@@ -110,7 +105,6 @@ export class AppComponent implements OnInit{
   }
 
   public filterZnamenitosti (status?: Status, key?: string): void {
-    this.setRating();
     var results: Znamenitost[] = [];
     this.znamenitosti=this.znamenitostiAll;
     this.znamenitostiFiltered=this.znamenitostiAll;
@@ -145,26 +139,25 @@ export class AppComponent implements OnInit{
   authenticate(logInData: User): void {
     this.authenticationService.findUser(logInData.user, logInData.sifra).subscribe({
       next: (response: User) => {
-        this.user = response;
-        this.isAuthenticated = true;
+        this.isAuthenticated  = true;
         this.readonly = false;
+        if (response.uloga===Role.USER_ADMIN)
+          this.isAdmin = true;
       },
       error: (error: HttpErrorResponse) => {
         this.isAuthenticated = false;
+        this.isAdmin = false;
       }
     });
   }
 
   logout() {
     this.isAuthenticated = false;
+    this.isAdmin = false;
     this.readonly = true;
   }
 
   public onRateChange(id: number): void{
-  }
-
-  public setRating(): void{
-    for (const ocjena of this.ocjene) 
-      this.selected[ocjena.znamenitostId] = ocjena.ocjena;      
+    console.log(this.user);
   }
 }
