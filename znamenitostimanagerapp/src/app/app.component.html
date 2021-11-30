@@ -73,7 +73,7 @@
               <div *ngIf="znamenitost?.status === Status.ZNAMENITOST_UP">
 
 
-                <ngb-rating id="{{znamenitost.id}}" (rateChange)="onRateChange(znamenitost.id)" [max]="5" [(rate)]="selected[znamenitost.id]" (hover)="hovered=$event" (leave)="hovered=0" [readonly]="readonly"></ngb-rating>
+                <ngb-rating id="{{znamenitost.id}}" [(rate)]="selected[znamenitost.id]" (rateChange)="onRateChange(znamenitost.id, selected[znamenitost.id])" [max]="5"  (hover)="hovered=$event" (leave)="hovered=0" [readonly]="readonly"></ngb-rating>
 
 
               </div>  

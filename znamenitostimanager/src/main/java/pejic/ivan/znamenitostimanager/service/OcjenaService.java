@@ -34,4 +34,5 @@ public class OcjenaService {
         return ocjenaRepo.findOcjenaByZnamenitostId(znamenitostId)
                 .orElseThrow(()-> new OcjenaNotFoundException("Ocjena za znamenitost pod id "+ znamenitostId +" ne posotoji"));
     }
+
 }

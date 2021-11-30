@@ -16,10 +16,10 @@ import { Ocjena } from './interface/ocjena';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit{
-  selected: number[];
-  hovered = 0;
-  readonly = true;
   title = 'znamenitostimanagerapp';
+  public selected: number[];
+  public hovered!: number;
+  public readonly = true;
   public user!: User;
   public znamenitostiAll: Znamenitost[];
   public znamenitostiFiltered: Znamenitost[];
@@ -29,7 +29,7 @@ export class AppComponent implements OnInit{
   public ocjene: Ocjena[]
   readonly Status = Status;
   readonly Role = Role;
-  isAuthenticated = false;
+  public isAuthenticated = false;
 
 
   constructor(public ocjenaService: OcjenaService, public authenticationService: AuthenticationService, private znamenitostService: ZnamenitostiService){this.ocjene = [], this.selected= [], this.znamenitosti = [], this.znamenitostiAll = [], this.znamenitostiFiltered = []}
@@ -54,8 +54,8 @@ export class AppComponent implements OnInit{
     public getOcjene(): void {
       this.ocjenaService.getOcjene().subscribe({
         next: (response: Ocjena[]) => {
-          this.setRating();
           this.ocjene = response;
+          this.setRating();
       },
       error: (error: HttpErrorResponse) => {
         alert(error.message);
@@ -110,7 +110,6 @@ export class AppComponent implements OnInit{
   }
 
   public filterZnamenitosti (status?: Status, key?: string): void {
-    this.setRating();
     var results: Znamenitost[] = [];
     this.znamenitosti=this.znamenitostiAll;
     this.znamenitostiFiltered=this.znamenitostiAll;
@@ -160,11 +159,21 @@ export class AppComponent implements OnInit{
     this.readonly = true;
   }
 
-  public onRateChange(id: number): void{
+  public onRateChange(id: number, ocjena: number): void{
+    this.ocjenaService.findOcjena(id).subscribe({
+      next: (response: Ocjena) => {
+        response.ocjena = ocjena;
+        this.ocjenaService.updateOcjena(response).subscribe();
+      },
+      error: () => {
+        var novaOcjena: Ocjena = {userId: this.user.id, znamenitostId: id, ocjena: ocjena}
+        this.ocjenaService.addOcjena(novaOcjena).subscribe();
+      }
+    });
   }
 
   public setRating(): void{
-    for (const ocjena of this.ocjene) 
+    for (const ocjena of this.ocjene)       
       this.selected[ocjena.znamenitostId] = ocjena.ocjena;      
   }
 }

@@ -23,4 +23,8 @@ export class OcjenaService {
     public updateOcjena(ocjena: Ocjena): Observable<Ocjena> {
     return this.http.put<Ocjena>(`${this.apiServerUrl}/ocjena/update`, ocjena);
   }
+
+  public findOcjena(id: number): Observable<Ocjena> {
+    return this.http.get<Ocjena>(`${this.apiServerUrl}/ocjena/find/${id}`);
+  }
 }

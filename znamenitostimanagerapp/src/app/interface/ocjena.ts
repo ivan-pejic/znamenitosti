@@ -1,5 +1,5 @@
 export interface Ocjena {
-    id: number;
+    id?: number;
     userId: number;
     znamenitostId: number;
     ocjena: number;
